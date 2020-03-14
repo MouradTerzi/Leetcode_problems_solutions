@@ -31,3 +31,64 @@ def merge_intervals(intervals):
       break
         
   return intervals
+
+#Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+#You may assume that the intervals were initially sorted according to their start times.
+
+#Example 1:
+
+#Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+#Output: [[1,5],[6,9]]
+#Example 2:
+
+#Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+#Output: [[1,2],[3,10],[12,16]]
+#Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
+
+def insert(intervals, newInterval):
+        
+  #Insert the intervals 
+  i = 0
+  while i != len(intervals):
+
+    if (intervals[i][1] >= newInterval[0] and intervals[i][1] <= newInterval[1]): #Insertion and merging 
+      intervals[i] = [min(intervals[i][0],newInterval[0]),newInterval[1]]
+      break
+
+    elif (newInterval[1] >= intervals[i][0] and newInterval[1] <= intervals[i][1]): #Insertion and merging 
+      intervals[i] = [min(intervals[i][0],newInterval[0]),intervals[i][1]]
+      break
+
+    elif (i == 0) and (newInterval[1] < intervals[0][0]):  #Insert in the beginning
+      intervals.insert(0,newInterval)
+      return intervals
+
+    elif ( i == len(intervals) - 1 ) and ( intervals[i][1] < newInterval[0] ):  #Insert at the last position
+      intervals.append(newInterval)
+      return intervals
+
+    elif (intervals[i-1][1] < newInterval[0]) and (intervals[i][0] > newInterval[1]): #Insert without merging
+      intervals.insert(i,newInterval)
+      return intervals
+
+    else:
+      i +=1
+        
+       
+  if len(intervals) == 0: #The input list is empty:
+    return [newInterval]
+
+  else:
+      
+    #Merge the overlapping intervals
+    while i != len(intervals) - 1:
+      if intervals[i][1] >= intervals[i+1][1]:
+        del intervals[i+1]
+    
+      elif intervals[i][1] >= intervals[i+1][0]:
+        intervals[i][1] = intervals[i+1][1]
+        del intervals[i+1]
+      else: 
+        break 
+
+    return intervals     
